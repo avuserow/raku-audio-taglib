@@ -1,0 +1,19 @@
+{
+  "authors": [
+    "Adrian Kreher"
+  ],
+  "build-depends": [],
+  "depends": [],
+  "description": "Read ID3 and other audio metadata with TagLib",
+  "license": "Artistic-2.0",
+  "name": "Audio::TagLib",
+  "perl": "6.d",
+  "provides": {
+    "Audio::TagLib": "lib/Audio/TagLib.rakumod"
+  },
+  "resources": [],
+  "source-url": "",
+  "tags": [],
+  "test-depends": [],
+  "version": "0.0.1"
+}

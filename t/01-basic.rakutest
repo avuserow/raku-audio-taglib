@@ -1,0 +1,6 @@
+use Test;
+use Audio::TagLib;
+
+pass "replace me";
+
+done-testing;
