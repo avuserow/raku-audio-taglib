@@ -1,3 +1,5 @@
+[![Actions Status](https://github.com/avuserow/raku-audio-taglib/workflows/test/badge.svg)](https://github.com/avuserow/raku-audio-taglib/actions)
+
 NAME
 ====
 
