@@ -2,8 +2,10 @@
   "authors": [
     "Adrian Kreher"
   ],
-  "build-depends": [],
-  "depends": [],
+  "build-depends": [
+  ],
+  "depends": [
+  ],
   "description": "Read ID3 and other audio metadata with TagLib",
   "license": "Artistic-2.0",
   "name": "Audio::TagLib",
@@ -16,7 +18,7 @@
     "resources/libtaglib_raku.dylib",
     "resources/libtaglib_raku.so"
   ],
-  "source-url" : "git://github.com/avuserow/raku-audio-taglib.git",
+  "source-url": "git://github.com/avuserow/raku-audio-taglib.git",
   "tags": [
     "audio",
     "music",
@@ -24,6 +26,7 @@
     "tagging",
     "taglib"
   ],
-  "test-depends": [],
+  "test-depends": [
+  ],
   "version": "0.0.1"
 }

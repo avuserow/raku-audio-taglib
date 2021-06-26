@@ -1,6 +1,19 @@
+use v6;
+
 use Test;
 use Audio::TagLib;
 
-pass "replace me";
+my $tl = Audio::TagLib.new('t/silence.ogg');
+
+is $tl.file, 't/silence.ogg', 'file';
+is $tl.title, '30 Seconds of Silence', 'title';
+is $tl.artist, 'avuserow', 'artist';
+is $tl.album, 'The Testing Album', 'album';
+is $tl.comment, 'Test Comment', 'comment';
+is $tl.genre, 'Rock', 'Genre is rock';
+is $tl.year, 2014, 'year';
+is $tl.track, 30, 'track number';
+
+is $tl.length, 30, 'length';
 
 done-testing;

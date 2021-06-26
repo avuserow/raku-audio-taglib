@@ -81,22 +81,25 @@ method !load-propertymap($taglib-file) {
     @.propertymap = ($abstract[$_] for ^$tagcount).pairup;
 }
 
-my constant HELPERLIB = "./libtaglib_raku.so";
-my sub taglib_file_new(Str) returns OpaquePointer is native(HELPERLIB) {*}
-my sub taglib_file_tag(OpaquePointer) returns OpaquePointer is native(HELPERLIB) {*}
-my sub taglib_file_is_valid(OpaquePointer) returns Bool is native(HELPERLIB) {*}
-my sub taglib_file_free(OpaquePointer) is native(HELPERLIB) {*}
-my sub taglib_all_tags_pairs(OpaquePointer, uint32 is rw) returns CArray[Str] is native(HELPERLIB) {*}
+sub native-lib {
+    my $lib-name = sprintf($*VM.config<dll>, "taglib_raku");
+    return ~(%?RESOURCES{$lib-name});
+}
+my sub taglib_file_new(Str) returns OpaquePointer is native(&native-lib) {*}
+my sub taglib_file_tag(OpaquePointer) returns OpaquePointer is native(&native-lib) {*}
+my sub taglib_file_is_valid(OpaquePointer) returns Bool is native(&native-lib) {*}
+my sub taglib_file_free(OpaquePointer) is native(&native-lib) {*}
+my sub taglib_all_tags_pairs(OpaquePointer, uint32 is rw) returns CArray[Str] is native(&native-lib) {*}
 
-my sub taglib_tag_title(OpaquePointer) returns Str is native(HELPERLIB) {*}
-my sub taglib_tag_artist(OpaquePointer) returns Str is native(HELPERLIB) {*}
-my sub taglib_tag_album(OpaquePointer) returns Str is native(HELPERLIB) {*}
-my sub taglib_tag_comment(OpaquePointer) returns Str is native(HELPERLIB) {*}
-my sub taglib_tag_genre(OpaquePointer) returns Str is native(HELPERLIB) {*}
-my sub taglib_tag_year(OpaquePointer) returns uint32 is native(HELPERLIB) {*}
-my sub taglib_tag_track(OpaquePointer) returns uint32 is native(HELPERLIB) {*}
+my sub taglib_tag_title(OpaquePointer) returns Str is native(&native-lib) {*}
+my sub taglib_tag_artist(OpaquePointer) returns Str is native(&native-lib) {*}
+my sub taglib_tag_album(OpaquePointer) returns Str is native(&native-lib) {*}
+my sub taglib_tag_comment(OpaquePointer) returns Str is native(&native-lib) {*}
+my sub taglib_tag_genre(OpaquePointer) returns Str is native(&native-lib) {*}
+my sub taglib_tag_year(OpaquePointer) returns uint32 is native(&native-lib) {*}
+my sub taglib_tag_track(OpaquePointer) returns uint32 is native(&native-lib) {*}
 
-my sub taglib_file_length(OpaquePointer) returns int32 is native(HELPERLIB) {*}
+my sub taglib_file_length(OpaquePointer) returns int32 is native(&native-lib) {*}
 
 =begin pod
 
