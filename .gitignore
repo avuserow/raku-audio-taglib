@@ -1,3 +1,3 @@
 .precomp/
 /Audio-TagLib-*
-libtaglib_helper.so
+resources/libtaglib_raku*

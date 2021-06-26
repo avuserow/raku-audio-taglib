@@ -81,7 +81,7 @@ method !load-propertymap($taglib-file) {
     @.propertymap = ($abstract[$_] for ^$tagcount).pairup;
 }
 
-my constant HELPERLIB = "./libtaglib_helper.so";
+my constant HELPERLIB = "./libtaglib_raku.so";
 my sub taglib_file_new(Str) returns OpaquePointer is native(HELPERLIB) {*}
 my sub taglib_file_tag(OpaquePointer) returns OpaquePointer is native(HELPERLIB) {*}
 my sub taglib_file_is_valid(OpaquePointer) returns Bool is native(HELPERLIB) {*}

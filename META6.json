@@ -11,9 +11,19 @@
   "provides": {
     "Audio::TagLib": "lib/Audio/TagLib.rakumod"
   },
-  "resources": [],
-  "source-url": "",
-  "tags": [],
+  "resources": [
+    "resources/libtaglib_raku.dll",
+    "resources/libtaglib_raku.dylib",
+    "resources/libtaglib_raku.so"
+  ],
+  "source-url" : "git://github.com/avuserow/raku-audio-taglib.git",
+  "tags": [
+    "audio",
+    "music",
+    "mp3",
+    "tagging",
+    "taglib"
+  ],
   "test-depends": [],
   "version": "0.0.1"
 }
