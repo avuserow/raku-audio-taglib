@@ -83,7 +83,7 @@ method !load-propertymap($taglib-file) {
 
 sub native-lib {
     my $lib-name = sprintf($*VM.config<dll>, "taglib_raku");
-    return ~(%?RESOURCES{$lib-name});
+    return ~(%?RESOURCES{$lib-name} // "resources/$lib-name");
 }
 my sub taglib_file_new(Str) returns OpaquePointer is native(&native-lib) {*}
 my sub taglib_file_tag(OpaquePointer) returns OpaquePointer is native(&native-lib) {*}

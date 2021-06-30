@@ -3,6 +3,14 @@
     "Adrian Kreher"
   ],
   "build-depends": [
+    {
+      "from": "bin",
+      "name": "g++"
+    },
+    {
+      "from": "bin",
+      "name": "taglib-config"
+    }
   ],
   "depends": [
   ],
