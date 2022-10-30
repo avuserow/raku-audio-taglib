@@ -14,7 +14,7 @@ method build($workdir) {
     "$destdir/libtaglib_raku.$_".IO.spurt("") for <dll dylib so>;
 
     my $libname = sprintf($*VM.config<dll>, "taglib_raku");
-    my $proc = run('g++', '-fPIC', '-shared', '-O3', '-Wall', '-o', "$destdir/$libname", 'src/taglib_raku.cpp', '-g', |@config-flags, '-lz');
+    my $proc = run('g++', '-fPIC', '-shared', '-O3', '-Wall', '-o', "$destdir/$libname", 'src/taglib_raku.cpp', '-g', '-I/usr/include/cryptopp', |@config-flags, '-lz');
 
     return $proc.exitcode == 0;
 }
