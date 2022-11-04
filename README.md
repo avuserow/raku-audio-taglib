@@ -65,7 +65,26 @@ These attributes will be undefined if they are not present in the file.
 
 The raw tag values are available in the propertymap attribute as a List of Pairs. It is possible to have duplicate keys (otherwise this would be a hash).
 
-If you are looking for a tag that is not available in the abstract interface, you can find it here.
+If you are looking for a tag that is not available in the abstract interface, you can find it here. O
+
+Album Art
+---------
+
+Album art can be extracted from most types of audio files. This module provides access to the first picture data in the file. Most files only have a single picture attached, so this is usually the album art.
+
+  * album-art-size - the size of the album art in bytes
+
+  * album-art-mime - the mime type of the album art, such as 'image/png'
+
+The data can be retrieved by calling one of the following methods:
+
+  * get-album-art - returns the data as a Blob[uint8]
+
+  * get-album-art-raw - returns the data as a CArray (call .elems to get the size)
+
+The raw variant is much faster if you are passing the data to another function that uses a CArray. If speed is important, consider using [NativeHelpers::Blob](NativeHelpers::Blob) to convert the raw variant.
+
+Note that the mime type is stored in the file, and not determined from the image, so it may be inaccurate.
 
 SEE ALSO
 ========
@@ -82,7 +101,7 @@ Adrian Kreher <avuserow@gmail.com>
 COPYRIGHT AND LICENSE
 =====================
 
-Copyright 2021 Adrian Kreher
+Copyright 2021-2022 Adrian Kreher
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 
