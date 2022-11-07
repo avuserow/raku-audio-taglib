@@ -79,8 +79,7 @@ tasks:
     language: Bash
     code: |
       if test $os = "alpine"; then
-        sudo apk add taglib --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
-        sudo apk add zlib-dev 
+        sudo apk add taglib-dev zlib-dev 
       elif test $os = "debian"; then
         sudo apt-get install -y -o DPkg::Lock::Timeout=100 libtag1-dev zlib1g-dev
       elif test $os = "ubuntu"; then
