@@ -17,7 +17,6 @@ tasks:
       }
       my @table = lol2table(@columns,@rows);
       .say for @table;
-      say $table;
     depends:
       -
         name: multi-versions
@@ -78,9 +77,9 @@ tasks:
       if test $os = "alpine"; then
         sudo apk add taglib --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
       elif test $os = "debian"; then
-        sudo apt-get install -y -o DPkg::Lock::Timeout=100 taglib
+        sudo apt-get install -y -o DPkg::Lock::Timeout=100 libtag1-dev
       elif test $os = "ubuntu"; then
-        sudo apt-get install -y taglib
+        sudo apt-get install -y libtag1-dev
       elif test $os = "arch"; then
         sudo pacman -S --needed --noconfirm -q 
       fi  
