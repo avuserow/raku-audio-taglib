@@ -69,13 +69,28 @@ tasks:
     depends:
       -
         name: rakubrew-install
+      -
+        name: install-deps
+  -
+    name: install-deps
+    language: Bash
+    code: |
+      if test $os = "alpine"; then
+        sudo apk add taglib --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
+      elif test $os = "debian"; then
+        sudo apt-get install -y -o DPkg::Lock::Timeout=100 taglib
+      elif test $os = "ubuntu"; then
+        sudo apt-get install -y taglib
+      elif test $os = "arch"; then
+        sudo pacman -S --needed --noconfirm -q 
+      endif  
   -
     name: rakubrew-install
     language: Bash
     code: |
       set -e
       if test $os = "debian"; then
-        sudo apt-get install -y time
+        sudo apt-get install -y -o DPkg::Lock::Timeout=100 time
       fi
       curl -sf https://rakubrew.org/perl/rakubrew -o rakubrew
       sudo mv rakubrew /usr/local/bin
