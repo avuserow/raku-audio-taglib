@@ -81,7 +81,7 @@ tasks:
       elif test $os = "ubuntu"; then
         sudo apt-get install -y libtag1-dev
       elif test $os = "arch"; then
-        sudo pacman -S --needed --noconfirm -q 
+        sudo pacman -S --needed --noconfirm -q taglib 
       fi  
   -
     name: rakubrew-install
