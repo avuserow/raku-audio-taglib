@@ -81,9 +81,9 @@ tasks:
       if test $os = "alpine"; then
         sudo apk add taglib-dev zlib-dev 
       elif test $os = "debian"; then
-        sudo apt-get install -y -o DPkg::Lock::Timeout=100 libtag1-dev zlib1g-dev
+        sudo apt-get install -y -o DPkg::Lock::Timeout=100 libtag1-dev zlib1g-dev time 
       elif test $os = "ubuntu"; then
-        sudo apt-get install -y libtag1-dev zlib1g-dev
+        sudo apt-get install -y libtag1-dev zlib1g-dev time 
       elif test $os = "arch"; then
         sudo pacman -S --needed --noconfirm -q taglib zlib time
       fi  
