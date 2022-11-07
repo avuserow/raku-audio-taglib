@@ -83,7 +83,7 @@ tasks:
         sudo apt-get install -y taglib
       elif test $os = "arch"; then
         sudo pacman -S --needed --noconfirm -q 
-      endif  
+      fi  
   -
     name: rakubrew-install
     language: Bash
