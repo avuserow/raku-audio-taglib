@@ -18,12 +18,9 @@
 #include <cstring>
 using namespace std;
 
-extern "C" void *taglib_file_new(char *path) {
-  TagLib::FileRef *f = new TagLib::FileRef(path);
-  return f;
-}
+extern "C" TagLib::FileRef *taglib_file_new(char *path) { return new TagLib::FileRef(path); }
 
-extern "C" void *taglib_file_tag(TagLib::FileRef *f) {
+extern "C" TagLib::Tag *taglib_file_tag(TagLib::FileRef *f) {
   if (!f->isNull() && f->tag()) {
     return f->tag();
   }
@@ -120,7 +117,9 @@ extern "C" ImageMetadata *taglib_get_image_md(TagLib::FileRef *f) {
     return new ImageMetadata();
   }
 
-  return new ImageMetadata(frame->mimetype, frame->picture);
+  auto md = new ImageMetadata(frame->mimetype, frame->picture);
+  delete frame;
+  return md;
 }
 
 extern "C" ssize_t taglib_get_image_buf(TagLib::FileRef *f, char *buf, size_t size) {
@@ -130,10 +129,13 @@ extern "C" ssize_t taglib_get_image_buf(TagLib::FileRef *f, char *buf, size_t si
   }
 
   auto pic = frame->picture;
-  if (pic.size() <= size) {
-    memcpy(buf, pic.data(), pic.size());
+  auto dsize = pic.size();
+  if (dsize <= size) {
+    memcpy(buf, pic.data(), dsize);
   }
-  return pic.size();
+  delete frame;
+
+  return dsize;
 }
 
 extern "C" char **taglib_all_tags_pairs(TagLib::FileRef *f, uint32_t *tagcount) {

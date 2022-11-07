@@ -54,7 +54,9 @@ submethod BUILD(IO() :$file) {
         );
     }
 
+
     unless taglib_file_is_valid($taglib-file) {
+        taglib_file_free($taglib-file);
         die X::Audio::TagLib::InvalidAudioFile.new(
             file => $file,
             text => 'TagLib reports file is invalid',
