@@ -61,7 +61,7 @@ tasks:
           rakubrew switch moar-$version
           cd source/
           zef install --/test Text::Table::Simple
-          zef install . --deps-only --test-depends --/test
+          zef install . --deps-only --test-depends --build-depends --/test
           zef build .
           /usr/bin/time -o "${cache_root_dir}/${version}_time" \
           zef test . && touch "${cache_root_dir}/${version}_ok"
