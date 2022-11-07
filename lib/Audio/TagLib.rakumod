@@ -1,4 +1,4 @@
-unit class Audio::TagLib:ver<0.0.2>;
+unit class Audio::TagLib:ver<0.0.3>;
 
 use NativeCall;
 
