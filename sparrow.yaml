@@ -81,7 +81,7 @@ tasks:
       if test $os = "alpine"; then
         sudo apk add taglib-dev zlib-dev 
       elif test $os = "debian"; then
-        sudo apt-get install -y -o DPkg::Lock::Timeout=100 libtag1-dev zlib1g-dev time 
+        sudo apt-get install -y libtag1-dev zlib1g-dev time 
       elif test $os = "ubuntu"; then
         sudo apt-get install -y libtag1-dev zlib1g-dev time 
       elif test $os = "arch"; then
@@ -92,9 +92,6 @@ tasks:
     language: Bash
     code: |
       set -e
-      if test $os = "debian"; then
-        sudo apt-get install -y -o DPkg::Lock::Timeout=100 time
-      fi
       curl -sf https://rakubrew.org/perl/rakubrew -o rakubrew
       sudo mv rakubrew /usr/local/bin
       sudo chmod a+x /usr/local/bin/rakubrew
