@@ -1,5 +1,4 @@
 image:
-  - melezhik/sparrow:alpine
   - melezhik/sparrow:debian
   - melezhik/sparrow:ubuntu
   - melezhik/sparrow:archlinux
@@ -60,11 +59,15 @@ tasks:
           ignore_error
         code: |
           set -e
+
           echo "Linux version: $os"
+          eval "$(~/.rakubrew/bin/rakubrew init Bash)"
           rakubrew download moar-$version
           rakubrew switch moar-$version
+          which raku
+          zef update
+          
           cd source/
-          zef install --/test Text::Table::Simple
           zef install . --deps-only --test-depends --build-depends --/test
           zef build .
           /usr/bin/time -o "${cache_root_dir}/${version}_time" \
@@ -92,7 +95,4 @@ tasks:
     language: Bash
     code: |
       set -e
-      curl -sf https://rakubrew.org/perl/rakubrew -o rakubrew
-      sudo mv rakubrew /usr/local/bin
-      sudo chmod a+x /usr/local/bin/rakubrew
-      rakubrew mode shim
+      curl -s https://rakubrew.org/install-on-perl.sh | sh
