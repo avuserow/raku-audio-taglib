@@ -96,3 +96,4 @@ tasks:
     code: |
       set -e
       curl -s https://rakubrew.org/install-on-perl.sh | sh
+      zef install --/test Text::Table::Simple
