@@ -61,20 +61,26 @@ tasks:
           set -e
 
           echo "Linux version: $os"
-          eval "$(~/.rakubrew/bin/rakubrew init Bash)"
-          rakubrew download moar-$version
-          rakubrew switch moar-$version
+
+          curl -sL https://rakudo.org/dl/rakudo/rakudo-moar-$version-01-linux-x86_64-gcc.tar.gz \
+          -o rakudo-moar-$version-01-linux-x86_64-gcc.tar.gz
+          tar -xzf rakudo-moar-$version-01-linux-x86_64-gcc.tar.gz          
+          eval "$(rakudo-moar-$version-01-linux-x86_64-gcc/scripts/set-env.sh)"
+
           which raku
-          zef update
+          which zef
+
+          raku --version
+          zef --version
           
           cd source/
           zef install . --deps-only --test-depends --build-depends --/test
           zef build .
+          
           /usr/bin/time -o "${cache_root_dir}/${version}_time" \
           zef test . && touch "${cache_root_dir}/${version}_ok"
+          
     depends:
-      -
-        name: rakubrew-install
       -
         name: install-deps
   -
@@ -90,10 +96,5 @@ tasks:
       elif test $os = "arch"; then
         sudo pacman -S --needed --noconfirm -q taglib zlib time
       fi  
-  -
-    name: rakubrew-install
-    language: Bash
-    code: |
-      set -e
-      curl -s https://rakubrew.org/install-on-perl.sh | sh
       zef install --/test Text::Table::Simple
+ 
