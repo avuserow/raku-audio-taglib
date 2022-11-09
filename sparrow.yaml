@@ -2,6 +2,7 @@ image:
   - melezhik/sparrow:debian
   - melezhik/sparrow:ubuntu
   - melezhik/sparrow:archlinux
+  - melezhik/sparrow:alpine
 tasks:
   -
     name: main
