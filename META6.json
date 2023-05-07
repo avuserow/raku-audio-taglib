@@ -26,7 +26,7 @@
     "libtaglib_raku.dylib",
     "libtaglib_raku.so"
   ],
-  "source-url": "git://github.com/avuserow/raku-audio-taglib.git",
+  "source-url": "https://github.com/avuserow/raku-audio-taglib.git",
   "tags": [
     "audio",
     "music",

@@ -1,6 +1,7 @@
 Revision history for Audio-TagLib
 
 {{$NEXT}}
+    - Fix compilation on gcc 13.x
 
 0.0.3  2022-11-06T21:55:28-06:00
     - Fix memory leak with reading album art

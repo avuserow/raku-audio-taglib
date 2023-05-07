@@ -15,7 +15,9 @@
 #include <vorbisfile.h>
 #include <wavpackfile.h>
 
+#include <cstdint>
 #include <cstring>
+
 using namespace std;
 
 extern "C" TagLib::FileRef *taglib_file_new(char *path) { return new TagLib::FileRef(path); }
