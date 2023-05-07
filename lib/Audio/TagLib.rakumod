@@ -213,7 +213,6 @@ Pairs. It is possible to have duplicate keys (otherwise this would be a hash).
 
 If you are looking for a tag that is not available in the abstract interface,
 you can find it here.
-O
 
 =head2 Album Art
 

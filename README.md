@@ -65,7 +65,7 @@ These attributes will be undefined if they are not present in the file.
 
 The raw tag values are available in the propertymap attribute as a List of Pairs. It is possible to have duplicate keys (otherwise this would be a hash).
 
-If you are looking for a tag that is not available in the abstract interface, you can find it here. O
+If you are looking for a tag that is not available in the abstract interface, you can find it here.
 
 Album Art
 ---------
