@@ -1,6 +1,8 @@
 Revision history for Audio-TagLib
 
 {{$NEXT}}
+
+0.0.4  2023-05-07T16:21:34-05:00
     - Fix compilation on gcc 13.x
 
 0.0.3  2022-11-06T21:55:28-06:00
