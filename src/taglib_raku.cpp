@@ -2,7 +2,11 @@
 #include <tag.h>
 #include <tpropertymap.h>
 
+#include <commentsframe.h>
+#include <id3v2frame.h>
+#include <id3v2header.h>
 #include <id3v2tag.h>
+#include <textidentificationframe.h>
 
 #include <asffile.h>
 #include <flacfile.h>
@@ -168,6 +172,95 @@ extern "C" char **taglib_all_tags_pairs(TagLib::FileRef *f, uint32_t *tagcount) 
       out[counter + 1] = strdup(j->toCString(true));
       counter += 2;
     }
+  }
+
+  return out;
+}
+
+extern "C" bool taglib_has_id3v2(TagLib::FileRef *f) {
+  TagLib::File *fh = f->file();
+  if (TagLib::MPEG::File *audioFile = dynamic_cast<TagLib::MPEG::File *>(fh)) {
+    return audioFile->hasID3v2Tag();
+  } else if (TagLib::FLAC::File *audioFile = dynamic_cast<TagLib::FLAC::File *>(fh)) {
+    return audioFile->hasID3v2Tag();
+  }
+
+  return false;
+}
+
+extern "C" char **taglib_id3v2_pairs(TagLib::FileRef *f, uint32_t *tagcount) {
+  if (f == NULL || f->file() == NULL) {
+    return NULL;
+  }
+
+  TagLib::File *fh = f->file();
+  TagLib::ID3v2::Tag *id3v2tag = NULL;
+  if (TagLib::MPEG::File *audioFile = dynamic_cast<TagLib::MPEG::File *>(fh)) {
+    if (audioFile->hasID3v2Tag()) {
+      id3v2tag = audioFile->ID3v2Tag();
+    }
+  } else if (TagLib::FLAC::File *audioFile = dynamic_cast<TagLib::FLAC::File *>(fh)) {
+    if (audioFile->hasID3v2Tag()) {
+      id3v2tag = audioFile->ID3v2Tag();
+    }
+  }
+
+  if (id3v2tag == NULL) {
+    return NULL;
+  }
+
+  for (TagLib::ID3v2::FrameList::ConstIterator it = id3v2tag->frameList().begin();
+       it != id3v2tag->frameList().end(); it++) {
+    *tagcount += 2;
+  }
+
+  char **out = (char **)malloc(sizeof(char *) * *tagcount);
+
+  size_t i = 0;
+  for (TagLib::ID3v2::FrameList::ConstIterator it = id3v2tag->frameList().begin();
+       it != id3v2tag->frameList().end(); it++) {
+
+    auto frameID = (*it)->frameID();
+    char *frameName = strndup(frameID.data(), frameID.size());
+
+    if (auto *comment = dynamic_cast<TagLib::ID3v2::CommentsFrame *>(*it)) {
+      if (!comment->description().isEmpty()) {
+        const char *key = comment->description().toCString(true);
+        size_t nameSize = strlen(frameName) + 1 + strlen(key) + 1;
+        out[i] = (char *)malloc(nameSize);
+        snprintf(out[i], nameSize, "%s:%s", frameName, key);
+        free(frameName);
+      } else {
+        out[i] = frameName;
+      }
+
+      out[i + 1] = strdup((*it)->toString().toCString());
+
+    } else if (auto *tif = dynamic_cast<TagLib::ID3v2::UserTextIdentificationFrame *>(*it)) {
+      if (!tif->description().isEmpty()) {
+        const char *key = tif->description().toCString(true);
+        size_t nameSize = strlen(frameName) + 1 + strlen(key) + 1;
+        out[i] = (char *)malloc(nameSize);
+        snprintf(out[i], nameSize, "%s:%s", frameName, key);
+        free(frameName);
+      } else {
+        out[i] = frameName;
+      }
+
+      // The first item is the description, so drop it
+      auto l = TagLib::StringList(tif->fieldList());
+      for (auto it = l.begin(); it != l.end(); ++it) {
+        l.erase(it);
+        break;
+      };
+      out[i + 1] = strdup(l.toString().toCString());
+
+    } else {
+      out[i] = frameName;
+      out[i + 1] = strdup((*it)->toString().toCString());
+    }
+
+    i += 2;
   }
 
   return out;

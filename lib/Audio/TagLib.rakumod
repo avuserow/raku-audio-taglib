@@ -10,6 +10,14 @@ class X::Audio::TagLib::InvalidAudioFile is Exception {
     }
 }
 
+class X::Audio::TagLib::InvalidMetadata is Exception {
+    has $.file;
+    has $.text;
+    method message() {
+        "Invalid metadata requested from $.file: $.text"
+    }
+}
+
 has Str $.file is readonly;
 
 has Str $.title is readonly;
@@ -24,13 +32,17 @@ has Int $.length is readonly;
 has Int $.album-art-size is readonly;
 has Str $.album-art-mime is readonly;
 
-has @.propertymap is readonly;
+has Bool() $.has-id3v2 is readonly = False;
 
-multi method new($file) {
-    self.bless(:$file);
+has @.propertymap is readonly;
+has Bool $!load-raw-id3v2 = False;
+has @!raw-id3v2;
+
+multi method new($file, :$load-raw-id3v2) {
+    self.bless(:$file, :$load-raw-id3v2);
 }
 
-submethod BUILD(IO() :$file) {
+submethod BUILD(IO() :$file, :$load-raw-id3v2) {
     unless $file ~~ :e {
         fail X::Audio::TagLib::InvalidAudioFile.new(
             file => $file,
@@ -80,13 +92,37 @@ submethod BUILD(IO() :$file) {
     $!album-art-size = $album-art-metadata.data_length;
     $!album-art-mime = $album-art-metadata.mimetype;
 
+    $!has-id3v2 = taglib_has_id3v2($taglib-file);
+
+    $!load-raw-id3v2 = $load-raw-id3v2.Bool;
+    if $!load-raw-id3v2 {
+        self!load-id3v2-tags($taglib-file);
+    }
+
     taglib_file_free($taglib-file);
 }
 
 method !load-propertymap($taglib-file) {
     my uint32 $tagcount = 0;
     my $abstract = taglib_all_tags_pairs($taglib-file, $tagcount);
-    @.propertymap = ($abstract[$_] for ^$tagcount).pairup;
+    @!propertymap = ($abstract[$_] for ^$tagcount).pairup;
+}
+
+method !load-id3v2-tags($taglib-file) {
+    my uint32 $tagcount = 0;
+    my $tag = taglib_id3v2_pairs($taglib-file, $tagcount);
+    @!raw-id3v2 = ($tag[$_] for ^$tagcount).pairup;
+}
+
+method raw-id3v2 {
+    unless $!load-raw-id3v2 {
+        fail X::Audio::TagLib::InvalidMetadata.new(
+            file => $!file,
+            text => 'ID3v2 Metadata was not loaded from this file',
+        );
+    }
+
+    return @!raw-id3v2;
 }
 
 method get-album-art-raw() {
@@ -120,6 +156,7 @@ my sub taglib_file_tag(OpaquePointer) returns OpaquePointer is native(&native-li
 my sub taglib_file_is_valid(OpaquePointer) returns Bool is native(&native-lib) {*}
 my sub taglib_file_free(OpaquePointer) is native(&native-lib) {*}
 my sub taglib_all_tags_pairs(OpaquePointer, uint32 is rw) returns CArray[Str] is native(&native-lib) {*}
+my sub taglib_id3v2_pairs(OpaquePointer, uint32 is rw) returns CArray[Str] is native(&native-lib) {*}
 
 my sub taglib_tag_title(OpaquePointer) returns Str is native(&native-lib) {*}
 my sub taglib_tag_artist(OpaquePointer) returns Str is native(&native-lib) {*}
@@ -138,6 +175,8 @@ my class NativeImageMetadata is repr<CStruct> {
 
 my sub taglib_get_image_md(OpaquePointer) is native(&native-lib) returns NativeImageMetadata {*}
 my sub taglib_get_image_buf(OpaquePointer, CArray[uint8], size_t) is native(&native-lib) returns ssize_t {*}
+
+my sub taglib_has_id3v2(OpaquePointer) is native(&native-lib) returns bool {*}
 
 =begin pod
 
@@ -184,6 +223,20 @@ C<Audio::Taglib::Simple> has a lowercase 'l' in its name, where this module
 uses C<TagLib> (as does the official website). I thought adjusting the case was
 a good idea at the time.
 
+=head2 Audio::TagLib
+
+=head3 new($path, :$load-raw-id3v2)
+
+Loads the metadata from the given file. All metadata is read at this point.
+
+The optional C<:load-raw-id3v2> flag determines whether the C<raw-id3v2> list is
+populated. This is false by default, since the C<propertymap> provides similiar
+information for more types of files, and it's faster to not generate this
+mapping.
+
+If any errors are encountered while reading the file or parsing the tags, a
+Failure is returned which contains an Exception explaining the error.
+
 =head3 Abstract API
 
 TagLib provides what is known as the "abstract API", which provides an easy
@@ -207,11 +260,25 @@ These attributes will be undefined if they are not present in the file.
 
 =head3 @.propertymap
 
-The raw tag values are available in the propertymap attribute as a List of
-Pairs. It is possible to have duplicate keys (otherwise this would be a hash).
+This is a List of Pairs of all the recognized tags within the file. The exact
+list of recognized tags differs from file to file, but the names are largely
+consistent between file types. For example, this allows the ID3v2 tag C<TPE2>
+and the MP4 tag C<aART> to be recognized as C<ALBUMARTIST>.
 
-If you are looking for a tag that is not available in the abstract interface,
-you can find it here.
+If you are looking for a tag not found in the above abstract interface, you
+should be able to find it here.
+
+=head3 Bool has-id3v2
+
+True if the file has an ID3v2 tag. This value is defined whether or not
+C<:load-raw-id3v2> is specified.
+
+=head3 @.raw-id3v2
+
+Similar to propertymap, this is a list of native ID3v2 tags, by their short
+identifier (e.g. C<TPE2> instead of C<ALBUMARTIST>). This list is empty if there
+are no ID3v2 Tag, and will return a C<Failure> if the C<:load-raw-id3v2> flag
+was not provided to the constructor.
 
 =head2 Album Art
 
@@ -246,7 +313,7 @@ Adrian Kreher <avuserow@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2021-2022 Adrian Kreher
+Copyright 2021-2023 Adrian Kreher
 
 This library is free software; you can redistribute it and/or modify it under
 the Artistic License 2.0.
