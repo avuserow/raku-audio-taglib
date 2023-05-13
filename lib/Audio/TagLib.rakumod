@@ -32,13 +32,13 @@ multi method new($file) {
 
 submethod BUILD(IO() :$file) {
     unless $file ~~ :e {
-        die X::Audio::TagLib::InvalidAudioFile.new(
+        fail X::Audio::TagLib::InvalidAudioFile.new(
             file => $file,
             text => 'File does not exist',
         );
     }
     unless $file ~~ :f {
-        die X::Audio::TagLib::InvalidAudioFile.new(
+        fail X::Audio::TagLib::InvalidAudioFile.new(
             file => $file,
             text => 'Not a file',
         );
@@ -48,16 +48,15 @@ submethod BUILD(IO() :$file) {
     my $taglib-file = taglib_file_new($!file);
 
     unless $taglib-file {
-        die X::Audio::TagLib::InvalidAudioFile.new(
+        fail X::Audio::TagLib::InvalidAudioFile.new(
             file => $file,
             text => 'File not recognized or parseable by TagLib',
         );
     }
 
-
     unless taglib_file_is_valid($taglib-file) {
         taglib_file_free($taglib-file);
-        die X::Audio::TagLib::InvalidAudioFile.new(
+        fail X::Audio::TagLib::InvalidAudioFile.new(
             file => $file,
             text => 'TagLib reports file is invalid',
         );
