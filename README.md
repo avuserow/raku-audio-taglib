@@ -37,6 +37,17 @@ This module does not keep a taglib object open and reads everything into memory 
 
 `Audio::Taglib::Simple` has a lowercase 'l' in its name, where this module uses `TagLib` (as does the official website). I thought adjusting the case was a good idea at the time.
 
+Audio::TagLib
+-------------
+
+### new($path, :$load-raw-id3v2)
+
+Loads the metadata from the given file. All metadata is read at this point.
+
+The optional `:load-raw-id3v2` flag determines whether the `raw-id3v2` list is populated. This is false by default, since the `propertymap` provides similiar information for more types of files, and it's faster to not generate this mapping.
+
+If any errors are encountered while reading the file or parsing the tags, a Failure is returned which contains an Exception explaining the error.
+
 ### Abstract API
 
 TagLib provides what is known as the "abstract API", which provides an easy interface to common tags without having to know the format-specific identifier for a given tag. This module provides these as attributes of `Audio::TagLib`. The following fields are available as strings (Str):
@@ -63,9 +74,17 @@ These attributes will be undefined if they are not present in the file.
 
 ### @.propertymap
 
-The raw tag values are available in the propertymap attribute as a List of Pairs. It is possible to have duplicate keys (otherwise this would be a hash).
+This is a List of Pairs of all the recognized tags within the file. The exact list of recognized tags differs from file to file, but the names are largely consistent between file types. For example, this allows the ID3v2 tag `TPE2` and the MP4 tag `aART` to be recognized as `ALBUMARTIST`.
 
-If you are looking for a tag that is not available in the abstract interface, you can find it here.
+If you are looking for a tag not found in the above abstract interface, you should be able to find it here.
+
+### Bool has-id3v2
+
+True if the file has an ID3v2 tag. This value is defined whether or not `:load-raw-id3v2` is specified.
+
+### @.raw-id3v2
+
+Similar to propertymap, this is a list of native ID3v2 tags, by their short identifier (e.g. `TPE2` instead of `ALBUMARTIST`). This list is empty if there are no ID3v2 Tag, and will return a `Failure` if the `:load-raw-id3v2` flag was not provided to the constructor.
 
 Album Art
 ---------
@@ -101,7 +120,7 @@ Adrian Kreher <avuserow@gmail.com>
 COPYRIGHT AND LICENSE
 =====================
 
-Copyright 2021-2022 Adrian Kreher
+Copyright 2021-2023 Adrian Kreher
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 

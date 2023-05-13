@@ -2,6 +2,10 @@ Revision history for Audio-TagLib
 
 {{$NEXT}}
 
+0.0.5  2023-05-12T23:17:13-05:00
+    - Add access to raw ID3v2 tags
+    - Use Failures in the constructor instead of throwing Exceptions
+
 0.0.4  2023-05-07T16:21:34-05:00
     - Fix compilation on gcc 13.x
 
