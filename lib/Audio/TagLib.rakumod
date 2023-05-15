@@ -1,4 +1,4 @@
-unit class Audio::TagLib:auth<zef:avuserow>:ver<0.0.5>;
+unit class Audio::TagLib:auth<zef:avuserow>:ver<0.0.6>;
 
 use NativeCall;
 
