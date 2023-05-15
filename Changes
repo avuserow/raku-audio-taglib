@@ -1,6 +1,7 @@
 Revision history for Audio-TagLib
 
 {{$NEXT}}
+    - Fix Unicode for raw ID3v2 tags
 
 0.0.5  2023-05-12T23:17:13-05:00
     - Add access to raw ID3v2 tags

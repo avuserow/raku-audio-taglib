@@ -234,7 +234,7 @@ extern "C" char **taglib_id3v2_pairs(TagLib::FileRef *f, uint32_t *tagcount) {
         out[i] = frameName;
       }
 
-      out[i + 1] = strdup((*it)->toString().toCString());
+      out[i + 1] = strdup((*it)->toString().toCString(true));
 
     } else if (auto *tif = dynamic_cast<TagLib::ID3v2::UserTextIdentificationFrame *>(*it)) {
       if (!tif->description().isEmpty()) {
@@ -253,11 +253,11 @@ extern "C" char **taglib_id3v2_pairs(TagLib::FileRef *f, uint32_t *tagcount) {
         l.erase(it);
         break;
       };
-      out[i + 1] = strdup(l.toString().toCString());
+      out[i + 1] = strdup(l.toString().toCString(true));
 
     } else {
       out[i] = frameName;
-      out[i + 1] = strdup((*it)->toString().toCString());
+      out[i + 1] = strdup((*it)->toString().toCString(true));
     }
 
     i += 2;
