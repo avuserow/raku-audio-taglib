@@ -148,7 +148,7 @@ method get-album-art() {
 
 sub native-lib {
     my $lib-name = sprintf($*VM.config<dll>, "taglib_raku");
-    return ~(%?RESOURCES{$lib-name} // "resources/$lib-name");
+    return %?RESOURCES{$lib-name}.IO.absolute // "resources/$lib-name";
 }
 
 my sub taglib_file_new(Str) returns OpaquePointer is native(&native-lib) {*}
